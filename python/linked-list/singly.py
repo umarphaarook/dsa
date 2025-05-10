@@ -99,7 +99,7 @@ if __name__ == '__main__':
 	ll.insert_head(3)
 	ll.insert(4)
 	ll.insert(5)
-	ll.insert(6)
+	ll.insert_tail(6)
 	ll.insert_at(7, 0)
 	ll.insert_at(8, 70)
 	ll.print()
