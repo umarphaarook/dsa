@@ -87,21 +87,21 @@ class List:
 	def insert_r(self, data):
 		self.insert_tail_r(data)
 
-	def find_left_neighbor(self, data):
+	def search_left_neighbor(self, key):
 		curr_node = self.head
 		while curr_node.next:
-			if curr_node.next.data == data: return curr_node
+			if curr_node.next.data == key: return curr_node
 			else: curr_node = curr_node.next
 
-	def find(self, data):
+	def search(self, key):
 		curr_node = self.head
 		if not curr_node:
 			return None
 		# when the first node is the target
-		elif curr_node.data == data:
+		elif curr_node.data == key:
 			return	curr_node.data
 		else:
-			neighbor = self.find_left_neighbor(data)
+			neighbor = self.search_left_neighbor(key)
 			if neighbor:
 				return neighbor.next.data
 			else:
@@ -114,7 +114,7 @@ class List:
 			if curr_node.data == data:
 				self.head = curr_node.next
 			else:
-				neighbor = self.find_left_neighbor(data)
+				neighbor = self.search_left_neighbor(data)
 				if neighbor:
 					gabbage = neighbor.next
 					new_next = gabbage.next
@@ -164,8 +164,8 @@ if __name__ == '__main__':
 	# ll.delete(4)
 	# ll.delete(8)
 	# ll.show_list()
-	# print(f'Find {2}: {ll.find(2)}')
-	# print(f'Find {9}: {ll.find(9)}')
+	# print(f'Search {2}: {ll.search(2)}')
+	# print(f'Search {9}: {ll.search(9)}')
 	# ll.reverse()
 	# ll.show_list()
 
@@ -195,7 +195,7 @@ if __name__ == '__main__':
 	ll_r.show_list_r()
 	ll_r.delete(8)
 	ll_r.show_list_r()
-	print(f'Find {2}: {ll_r.find(2)}')
-	print(f'Find {9}: {ll_r.find(9)}')
+	print(f'Search {2}: {ll_r.search(2)}')
+	print(f'search {9}: {ll_r.search(9)}')
 	ll_r.reverse()
 	ll_r.show_list_r()
