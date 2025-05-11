@@ -25,19 +25,18 @@ class List:
 				curr_node = curr_node.next
 			curr_node.next = new_node
 
-	def __insert_tail_r__(self, curr_node, new_node):
-		if curr_node.next:
-			self.__insert_tail_r__(curr_node.next, new_node)
-		else:
-			curr_node.next = new_node
-
 	def insert_tail_r(self, data):
 		curr_node = self.head
 		new_node = Node(data)
 		if not curr_node:
 			self.head = new_node
 		else:
-			self.__insert_tail_r__(curr_node, new_node)
+			def _insert_tail_r(curr_node, new_node):
+				if curr_node.next:
+					_insert_tail_r(curr_node.next, new_node)
+				else:
+					curr_node.next = new_node
+			_insert_tail_r(curr_node, new_node)
 
 	def insert_at(self, data, index):
 		curr_node = self.head
@@ -60,26 +59,24 @@ class List:
 						break
 				curr_node_index = next_node_index
 
-	def __insert_at_r__(self, index, curr_node, curr_node_index, new_node):
-		if curr_node.next:
-			next_node = curr_node.next
-			next_node_index = curr_node_index + 1
-			if index == next_node_index:
-				curr_node.next = new_node
-				new_node.next = next_node
-			else:
-				self.__insert_at_r__(index, next_node, next_node_index, new_node)
-		else:
-			curr_node.next = new_node
-
 	def insert_at_r(self, data, index):
 		curr_node = self.head
 		new_node = Node(data)
 		if not curr_node or index <= 0:
 			self.insert_head_r(data)
 		else:
-			self.__insert_at_r__(index, curr_node, 0, new_node)
-		
+			def _insert_at_r(index, curr_node, curr_node_index, new_node):
+				if curr_node.next:
+					next_node = curr_node.next
+					next_node_index = curr_node_index + 1
+					if index == next_node_index:
+						curr_node.next = new_node
+						new_node.next = next_node
+					else:
+						_insert_at_r(index, next_node, next_node_index, new_node)
+				else:
+					curr_node.next = new_node
+			_insert_at_r(index, curr_node, 0, new_node)
 
 	def insert(self, data):
 		self.insert_tail(data)
@@ -90,8 +87,20 @@ class List:
 	def search_left_neighbor(self, key):
 		curr_node = self.head
 		while curr_node.next:
-			if curr_node.next.data == key: return curr_node
-			else: curr_node = curr_node.next
+			if curr_node.next.data == key:
+				return curr_node
+			else:
+				curr_node = curr_node.next
+
+	def search_left_neighbor_r(self, key):
+		def _search_left_neighbor_r(key, curr_node):
+			if not curr_node.next:
+				return None
+			elif curr_node.next.data == key:
+				return curr_node
+			else:
+				return _search_left_neighbor_r(key, curr_node.next)
+		return _search_left_neighbor_r(key, self.head)
 
 	def search(self, key):
 		curr_node = self.head
@@ -101,6 +110,7 @@ class List:
 		elif curr_node.data == key:
 			return	curr_node.data
 		else:
+			# neighbor = self.search_left_neighbor_r(key)
 			neighbor = self.search_left_neighbor(key)
 			if neighbor:
 				return neighbor.next.data
@@ -114,6 +124,7 @@ class List:
 			if curr_node.data == data:
 				self.head = curr_node.next
 			else:
+				# neighbor = self.search_left_neighbor_r(data)
 				neighbor = self.search_left_neighbor(data)
 				if neighbor:
 					gabbage = neighbor.next
@@ -130,6 +141,15 @@ class List:
 			curr_node = next_node
 		self.head = prev_node
 
+	def reverse_r(self):
+		def _reverse_r(prev_node, curr_node):
+			if curr_node:
+				_reverse_r(curr_node, curr_node.next)
+				curr_node.next = prev_node
+			else:
+				self.head = prev_node
+		_reverse_r(None, self.head)
+
 	def show_list(self):
 		curr_node = self.head
 		print('list: ', end='')
@@ -138,36 +158,47 @@ class List:
 			curr_node = curr_node.next
 		print(end='None\n')
 
-	def __show_list_r__(self, node):
-		if node:
-			print(node.data, end=' -> ')
-			self.__show_list_r__(node.next)
-
 	def show_list_r(self):
 		print('list: ', end='')
-		self.__show_list_r__(self.head)
+		def _show_list_r(curr_node):
+			if curr_node:
+				print(curr_node.data, end=' -> ')
+				_show_list_r(curr_node.next)
+		_show_list_r(self.head)
 		print(end='None\n')
 
 if __name__ == '__main__':
-	# print('\n<< Iterative >>\n')
-	# ll = List()
-	# ll.insert_head(1)
-	# ll.insert_head(2)
-	# ll.insert_head(3)
-	# ll.insert(4)
-	# ll.insert(5)
-	# ll.insert_tail(6)
-	# ll.insert_at(7, 0)
-	# ll.insert_at(8, 70)
-	# ll.show_list()
-	# ll.delete(7)
-	# ll.delete(4)
-	# ll.delete(8)
-	# ll.show_list()
-	# print(f'Search {2}: {ll.search(2)}')
-	# print(f'Search {9}: {ll.search(9)}')
-	# ll.reverse()
-	# ll.show_list()
+	print('\n<< Iterative >>\n')
+	ll = List()
+	ll.insert_head(1)
+	ll.show_list()
+	ll.insert_head(2)
+	ll.show_list()
+	ll.insert_head(3)
+	ll.show_list()
+	ll.insert(4)
+	ll.show_list()
+	ll.insert(5)
+	ll.show_list()
+	ll.insert_tail(6)
+	ll.show_list()
+	ll.insert_at(7, 0)
+	ll.show_list()
+	ll.insert_at(8, 3)
+	ll.show_list()
+	ll.insert_at(9, 90)
+	ll.show_list()
+	ll.delete(7)
+	ll.show_list()
+	ll.delete(4)
+	ll.show_list()
+	ll.delete(8)
+	ll.show_list()
+	print(f'Search {2}: {ll.search(2)}')
+	print(f'search {9}: {ll.search(9)}')
+	print(f'search {10}: {ll.search(10)}')
+	ll.reverse()
+	ll.show_list()
 
 	print('\n<< Recursive >>\n')
 	ll_r = List()
@@ -197,5 +228,6 @@ if __name__ == '__main__':
 	ll_r.show_list_r()
 	print(f'Search {2}: {ll_r.search(2)}')
 	print(f'search {9}: {ll_r.search(9)}')
-	ll_r.reverse()
+	print(f'search {10}: {ll_r.search(10)}')
+	ll_r.reverse_r()
 	ll_r.show_list_r()
